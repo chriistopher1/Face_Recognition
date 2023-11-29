@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
       "process.env.PUBLIC_URL": JSON.stringify(env.PUBLIC_URL),
     },
     plugins: [react()],
+    base: "/face-recognition/",
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
