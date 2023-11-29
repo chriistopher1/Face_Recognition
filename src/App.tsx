@@ -1,11 +1,9 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Attendance from "./pages/Attendance";
-import Success from "./pages/Success";
 
 import "./globals.css";
 
@@ -21,7 +19,6 @@ const App = () => {
         <Route path="/success" element={<Attendance />}></Route>
 
         <Route index element={<Home />}></Route>
-
       </Routes>
       <Toaster />
     </main>

@@ -1,7 +1,5 @@
 import * as z from "zod";
 
-const validImageExtensions = [".jpg", ".png"];
-
 import { isNimTaken } from "../appwrite/api";
 
 export const registerValidation = z.object({

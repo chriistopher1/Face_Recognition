@@ -1,6 +1,6 @@
-import { ID, Models, Query } from "appwrite";
+import { ID, Query } from "appwrite";
 
-import { account, appwriteConfig, databases, avatars, storage } from "./config";
+import {  appwriteConfig, databases,  storage } from "./config";
 
 import { IUser } from "@/constants";
 

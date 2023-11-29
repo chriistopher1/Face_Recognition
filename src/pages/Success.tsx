@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-import { useEffect } from "react";
-
 import { updateUserStatus } from "@/lib/appwrite/api";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -10,17 +8,19 @@ import { useToast } from "@/components/ui/use-toast";
 const Success = ({ id }: { id: string }) => {
   const toast = useToast();
 
-
   async function handleClick() {
     const response = updateUserStatus(id);
 
     console.log(response);
     if (!response) {
-      toast.toast({ title: "Update failed. Please try again", variant: "destructive" });
+      toast.toast({
+        title: "Update failed. Please try again",
+        variant: "destructive",
+      });
       return;
     }
 
-    toast.toast({ title: "Take attendance is success"});
+    toast.toast({ title: "Take attendance is success" });
   }
 
   return (

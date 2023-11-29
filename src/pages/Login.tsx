@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,9 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { loginValidation } from "@/lib/validation";
-import FileUploader from "@/components/shared/FileUploader";
-
-import { saveUserToDB } from "@/lib/appwrite/api";
 
 const Login = () => {
 
