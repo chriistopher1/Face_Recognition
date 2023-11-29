@@ -1,4 +1,4 @@
-import  { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as faceapi from "face-api.js";
 import { useParams, useNavigate } from "react-router-dom";
 import { getUserFromNIM } from "../lib/appwrite/api";
@@ -29,17 +29,20 @@ function Attendance() {
         }
 
         setUser(currentUser);
-
-        startVideo();
-
-        videoRef.current && loadModels();
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
 
     faceReg();
-  }, [nim, navigate]);
+  }, [nim]);
+
+  useEffect(() => {
+    if (user) {
+      startVideo();
+      videoRef.current && loadModels();
+    }
+  }, [user]);
 
   const startVideo = () => {
     navigator.mediaDevices
@@ -55,7 +58,7 @@ function Attendance() {
   };
 
   const getLabeledFaceDescriptions = async () => {
-    console.log(user);
+    // console.log(user);
     const referenceImage = await faceapi.fetchImage(user?.face);
     const results = await faceapi
       .detectAllFaces(referenceImage)
@@ -84,55 +87,60 @@ function Attendance() {
 
   const faceMyDetect = () => {
     setInterval(async () => {
-      const detection = await faceapi
-        .detectSingleFace(videoRef.current!)
-        .withFaceLandmarks()
-        .withFaceDescriptor();
+      if (videoRef.current) {
+        const detection = await faceapi
+          .detectSingleFace(videoRef.current!)
+          .withFaceLandmarks()
+          .withFaceDescriptor();
 
-      if (detection) {
-        const resized = faceapi.resizeResults(detection, {
-          width: 940,
-          height: 650,
-        });
+        if (detection) {
+          const resized = faceapi.resizeResults(detection, {
+            width: 940,
+            height: 650,
+          });
 
-        if (faceMatcher) {
-          const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
-          const threshold = 0.3;
+          if (faceMatcher) {
+            const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
+            const threshold = 0.3;
 
-          if (bestMatch.distance < threshold) {
-            setPresent(true);
-          }
-
-          let personName: string;
-
-          if (bestMatch.label !== "unknown") {
-            personName = user?.name || "";
-          } else {
-            personName = "Unknown Person";
-          }
-
-          if (canvasRef.current) {
-            const canvas = canvasRef.current;
-            const context = canvas.getContext("2d");
-
-            if (context) {
-              faceapi.matchDimensions(canvas, {
-                width: 940,
-                height: 650,
-              });
-
-              const drawBox = new faceapi.draw.DrawBox(resized.detection.box, {
-                label: personName,
-              });
-
-              drawBox.draw(canvas);
+            if (bestMatch.distance < threshold) {
+              setPresent(true);
             }
+
+            let personName: string;
+
+            if (bestMatch.label !== "unknown") {
+              personName = user?.name || "";
+            } else {
+              personName = "Unknown Person";
+            }
+
+            if (canvasRef.current) {
+              const canvas = canvasRef.current;
+              const context = canvas.getContext("2d");
+
+              if (context) {
+                faceapi.matchDimensions(canvas, {
+                  width: 940,
+                  height: 650,
+                });
+
+                const drawBox = new faceapi.draw.DrawBox(
+                  resized.detection.box,
+                  {
+                    label: personName,
+                  }
+                );
+
+                drawBox.draw(canvas);
+              }
+            }
+          } else {
+            console.log("Face matcher not initialized.");
           }
         } else {
-          console.log("Face matcher not initialized.");
+          console.log("No face detected.");
         }
-      } else {
-        console.log("No face detected.");
       }
     }, 100);
   };
